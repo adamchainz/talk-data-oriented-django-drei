@@ -1,0 +1,96 @@
+z <!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Data-Oriented Django Drei</title>
+
+<link rel=stylesheet href=dist/reset.css>
+<link rel=stylesheet href=dist/reveal.css>
+<link rel=stylesheet href=dist/theme/django.css>
+
+<!-- Theme used for syntax highlighted code -->
+<link rel=stylesheet href=plugin/highlight/monokai.css>
+<!-- <style media=screen>
+  .reveal-viewport {height: 80%}
+</style> -->
+</head>
+<body>
+<div class=reveal>
+<div class=slides>
+
+<section>
+  <h1>Data-Oriented Django Drei</h1>
+  <h2>Adam Johnson</h2>
+</section>
+
+<section data-auto-animate>
+    <img src=img/t3-nano.svg class=r-stretch>
+</section>
+
+<section data-auto-animate>
+    <img src=img/t3-nano.svg class=r-stretch>
+    <p>
+        5Gbps burst network capacity
+    </p>
+</section>
+
+<section data-auto-animate data-auto-animate-restart>
+    <img src=img/webpage.svg class=r-stretch>
+</section>
+
+<section data-auto-animate>
+    <img src=img/webpage.svg class=r-stretch>
+    <p>
+        1MiB would be big
+    </p>
+</section>
+
+<section data-auto-animate data-auto-animate-restart>
+    <p data-id=p>
+        1MiB / 5Gbps = <strong class=fragment>1.7ms</strong>
+    </p>
+</section>
+
+<section data-auto-animate>
+    <p>
+        1MiB / 5Gbps = <strong>1.7ms</strong>
+    </p>
+    <p>
+        So why is 100ms a “great” server response time?
+    </p>
+</section>
+
+<section>
+    <img src=img/data-oriented-django.svg class=r-stretch>
+</section>
+
+<section>
+    <img src=img/data-oriented-django-restricted.svg class=r-stretch>
+</section>
+
+<section>
+  <h3>Thank you! 🤗</h3>
+  <ul>
+    <li><a href=https://adamj.eu/contact>adamj.eu/contact</a>
+    <li><a href=https://github.com/adamchainz/talk-data-oriented-django-deux>github.com/adamchainz/talk-data-oriented-django-deux</a>
+    <li>Books: <strong>Boost Your Django DX</strong>, <strong>Boost Your Git DX</strong>, <strong>Speed Up Your Django Tests</strong>
+  </ul>
+</section>
+
+</div>
+</div>
+
+<script src=dist/reveal.js></script>
+<script src=plugin/highlight/highlight.js></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    hash: true,
+    plugins: [ RevealHighlight ],
+    progress: false,
+  });
+</script>
+</body>
+</html>
