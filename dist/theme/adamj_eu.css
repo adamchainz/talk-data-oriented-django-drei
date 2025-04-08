@@ -1,22 +1,26 @@
 /**
- * Django-ish theme for reveal.js, adapted from Black theme
+ * adamj.eu-style theme for reveal.js, based on the white theme.
  */
-section.has-light-background, section.has-light-background h1, section.has-light-background h2, section.has-light-background h3, section.has-light-background h4, section.has-light-background h5, section.has-light-background h6 {
-  color: #222;
+section.has-dark-background, section.has-dark-background h1, section.has-dark-background h2, section.has-dark-background h3, section.has-dark-background h4, section.has-dark-background h5, section.has-dark-background h6 {
+  color: #fff;
 }
 
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
 :root {
-  --r-background-color: #0B2318;
+  --ultra-violet: #71589b;
+  --sparkling-grape: #8d4384;
+  --mulberry: #b36e9f;
+
+  --r-background-color: #fff;
   --r-main-font: "PT Sans", Helvetica, sans-serif;
   --r-main-font-size: 42px;
-  --r-main-color: #fff;
+  --r-main-color: #515151;
   --r-block-margin: 20px;
   --r-heading-margin: 0 0 20px 0;
   --r-heading-font: "PT Sans", Helvetica, sans-serif;
-  --r-heading-color: #fff;
+  --r-heading-color: var(--ultra-violet);
   --r-heading-line-height: 1.2;
   --r-heading-letter-spacing: normal;
   --r-heading-text-transform: none;
@@ -27,16 +31,18 @@ section.has-light-background, section.has-light-background h1, section.has-light
   --r-heading2-size: 1.6em;
   --r-heading3-size: 1.3em;
   --r-heading4-size: 1em;
-  --r-code-font: monospace;
-  --r-link-color: #42affa;
-  --r-link-color-dark: #068de9;
-  --r-link-color-hover: #8dcffc;
-  --r-selection-background-color: #bee4fd;
+  --r-code-font: "Ubuntu Mono", monospace;
+  --r-link-color: #268bd2;
+  --r-link-color-dark: rgb(30.7720647773, 99.5566801619, 192.7779352227);
+  --r-link-color-hover: rgb(73.95, 138.55, 226.1);
+  --r-selection-background-color: rgb(95.25, 152.25, 229.5);
   --r-selection-color: #fff;
+  --r-overlay-element-bg-color: 0, 0, 0;
+  --r-overlay-element-fg-color: 240, 240, 240;
 }
 
 .reveal-viewport {
-  background: #191919;
+  background: #fff;
   background-color: var(--r-background-color);
 }
 
@@ -206,7 +212,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
   width: 90%;
   margin: var(--r-block-margin) auto;
   text-align: left;
-  font-size: 0.65em;
+  font-size: 0.55em;
   font-family: var(--r-code-font);
   line-height: 1.2em;
   word-wrap: break-word;
@@ -217,6 +223,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
   font-family: var(--r-code-font);
   text-transform: none;
   tab-size: 2;
+  color: #bf616a;
 }
 
 .reveal pre code {
@@ -297,7 +304,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
  *********************************************/
 .reveal a {
   color: var(--r-link-color);
-  text-decoration: none;
+  text-decoration: underline;
   transition: color 0.15s ease;
 }
 
