@@ -58,11 +58,298 @@
 </section>
 
 <section>
-    <img src=img/data-oriented-django.svg class=r-stretch>
+  <img src=img/data-oriented-django.svg class=r-stretch>
 </section>
 
 <section>
-    <img src=img/data-oriented-django-restricted.svg class=r-stretch>
+  <img src=img/data-oriented-django-restricted.svg class=r-stretch>
+</section>
+
+<section>
+  <h2>Profile</h2>
+  <p>
+    Measure with an APM tool:
+  <ul>
+    <li><strong>Sentry</strong>
+    <li><strong>Scout APM</strong>
+    <li><strong>django-debug-toolbar</strong>
+</section>
+
+<section>
+  <img src=img/profile-pie.svg class=r-stretch>
+</section>
+
+<section data-auto-animate>
+  <img src=img/db-reads-writes.svg class=r-stretch>
+</section>
+
+<section data-auto-animate>
+  <img src=img/db-reads-writes.svg class=r-stretch>
+  <p>We gotta optimize the reads!
+</section>
+
+<section>
+  <h2>Model</h2>
+  <pre><code class=language-python>from django.db import models
+
+class Engine(models.Model):
+    name = models.TextField()
+    colour = models.TextField()</code></pre>
+</section>
+
+<section>
+  <h2>Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>colour</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Thomas</td>
+        <td>blue</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Percy</td>
+        <td>green</td>
+      </tr>
+      <tr>
+        <td>78</td>
+        <td>Kana</td>
+        <td>purple</td>
+      </tr>
+      <tr><td colspan=3 style="text-align: center">…</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section data-auto-animate>
+  <pre><code class=language-python>Engine.objects.filter(name='Kana')</code></pre>
+</section>
+
+<section data-auto-animate>
+  <pre><code class=language-python>Engine.objects.filter(name='Kana')</code></pre>
+  <pre><code class=language-sql>SELECT * FROM example_engine
+WHERE name = 'Kana'</code></pre>
+</section>
+
+<section data-auto-animate>
+  <pre><code class=language-sql>SELECT * FROM example_engine
+WHERE name = 'Kana'</code></pre>
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>colour</th>
+        <th>matched?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Thomas</td>
+        <td>blue</td>
+        <td><span class=fragment>❌</span></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Percy</td>
+        <td>green</td>
+        <td><span class=fragment>❌</span></td>
+      </tr>
+      <tr>
+        <td>78</td>
+        <td>Kana</td>
+        <td>purple</td>
+        <td><span class=fragment>✅</span></td>
+      </tr>
+      <tr><td colspan=3 style="text-align: center">…</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Table scan</h2>
+  <p class=fragment>
+    <strong>O(n)</strong>
+  <p class=fragment>
+    Slow for medium <strong>n</strong>
+</section>
+
+
+<section>
+  <h2>O(n)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th># rows</th>
+        <th>~operations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td>100</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>1,000</td>
+        <td>1,000</td>
+      </tr>
+      <tr>
+        <td>10,000</td>
+        <td>10,000</td>
+      </tr>
+      <tr>
+        <td>100,000</td>
+        <td>100,000</td>
+      </tr>
+      <tr>
+        <td>1,000,000</td>
+        <td>1,000,000</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section data-auto-animate>
+  <h2>Tables are a leaky abstraction</h2>
+</section>
+
+<section data-auto-animate>
+  <h2>Tables are a leaky abstraction</h2>
+  <p>Performance horrendous without indexes
+</section>
+
+<section data-auto-animate>
+  <h2>Tables are a leaky abstraction</h2>
+  <p>Performance horrendous without indexes
+  <p>Indexes make the world go round
+</section>
+
+<section>
+  <h2>Add an index</h2>
+  <pre><code class=language-python>from django.db import models
+
+class Engine(models.Model):
+    name = models.TextField()
+    colour = models.TextField()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+        ]</code></pre>
+</section>
+
+<section data-auto-animate>
+  <pre><code class=language-python>migrations.AddIndex(
+    model_name="engine",
+    index=models.Index(
+        fields=["name"],
+        name="example_engine_name",
+    ),
+)</code></pre>
+</section>
+
+<section data-auto-animate>
+  <pre><code class=language-python>migrations.AddIndex(
+    model_name="engine",
+    index=models.Index(
+        fields=["name"],
+        name="example_engine_name",
+    ),
+)</code></pre>
+  <pre><code class=language-sql>CREATE INDEX example_engine_name
+ON example_engine (name);</code></pre>
+</section>
+
+<section>
+  <h2>B-tree index</h2>
+  <img src=img/b-tree.svg class=r-stretch>
+</section>
+
+<section>
+  <pre><code class=language-sql>SELECT * FROM example_engine
+WHERE name = 'Kana'</code></pre>
+</section>
+
+<section data-transition="slide-in fade-out">
+  <img src=img/b-tree.svg class=r-stretch>
+</section>
+
+<section data-transition=fade>
+  <img src=img/b-tree-search-1.svg class=r-stretch>
+</section>
+
+<section data-transition=fade>
+  <img src=img/b-tree-search-2.svg class=r-stretch>
+</section>
+
+<section data-transition=fade>
+  <img src=img/b-tree-search-3.svg class=r-stretch>
+</section>
+
+<section>
+  <h2>B-tree index</h2>
+  <p class=fragment>
+    <strong>O(log n)</strong>
+  <p class=fragment>
+    Fast for even large <strong>n</strong>
+</section>
+
+<section>
+  <h2>O(log n)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th># rows</th>
+        <th>~operations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>2.3</td>
+      </tr>
+      <tr>
+        <td>100</td>
+        <td>4.6</td>
+      </tr>
+      <tr>
+        <td>1,000</td>
+        <td>6.9</td>
+      </tr>
+      <tr>
+        <td>10,000</td>
+        <td>9.2</td>
+      </tr>
+      <tr>
+        <td>100,000</td>
+        <td>11.5</td>
+      </tr>
+      <tr>
+        <td>1,000,000</td>
+        <td>13.8</td>
+      </tr>
+    </tbody>
+  </table>
 </section>
 
 <section>
