@@ -237,7 +237,7 @@ WHERE name = 'Kana'</code></pre>
 <section data-auto-animate>
   <h2>Tables are a leaky abstraction</h2>
   <p>Performance horrendous without indexes
-  <p>Indexes make the world go round
+  <p><strong>Indexes make the world go round</strong>
 </section>
 
 <section>
@@ -268,7 +268,7 @@ class Engine(models.Model):
   <pre><code class=language-python>migrations.AddIndex(
     model_name="engine",
     index=models.Index(
-        fields=["name"],
+        "name",
         name="example_engine_name",
     ),
 )</code></pre>
@@ -353,13 +353,102 @@ WHERE name = 'Kana'</code></pre>
 </section>
 
 <section>
+  <h2>Indexes are not free</h2>
+  <p>Extra storage
+  <p>Add overhead to writes
+  <p>So we cannot “index all the things”
+</section>
+
+<section>
+  <h2>Multi-column indexes</h2>
+  <pre><code class=language-python>from django.db import models
+
+models.Index("name", "colour")</code></pre>
+  <p>Speeds up filtering on only <code>name</code>, or on <code>name</code>&nbsp;and&nbsp;<code>colour</code>
+</section>
+
+<section>
+  <h2>Expression indexes</h2>
+  <pre><code class=language-python>from django.db import models
+from django.db.models import Lower
+
+models.Index(Lower("name"))</code></pre>
+  <p>Speeds up filtering like:
+  <pre><code class=language-python>Engine.objects.filter(Lower("name") = "kana")</code></pre>
+</section>
+
+<section>
+  <h2>Partial indexes</h2>
+  <pre><code class=language-python>from django.db import models
+
+models.Index(
+    "name",
+    condition=models.Q(colour="purple"),
+)</code></pre>
+  <p>Speeds up filtering only when condition is filtered:
+  <pre><code class=language-python>Engine.objects.filter(colour="purple", name="Kana")</code></pre>
+  <p>Smaller!</p>
+</section>
+
+<section>
+  <h2>Inclusion indexes</h2>
+  <pre><code class=language-python>from django.db import models
+
+models.Index(
+    "name",
+    include=["colour"]
+)</code></pre>
+  <p>Speeds up queries like:
+  <pre><code class=language-python>Engine.objects.filter(
+    name="Kana",
+).only("name", "colour")</code></pre>
+</section>
+
+<section>
+  <h2>Alternative index data structures</h2>
+  <p>
+    Typically <strong>O(log n)</strong> but smaller
+  <ul class=fragment>
+    <li>Hash - like a dict
+    <li>Bloom - index many fields in small space
+    <li>GiST - spatial data
+  </ul>
+  <p class=fragment>
+    See <code>django.contrib.postgres.indexes</code>
+</section>
+
+<section>
+  <h2>Which indexes to add?</h2>
+  <p>
+    Whole system optimization.
+  <p>
+    <strong>More of an art than a science</strong>
+  <p>
+    Check slowest queries
+</section>
+
+<section>
+  <h2>pgMustard</h2>
+  <img src=img/pgmustard.png class=r-stretch>
+</section>
+
+<section>
+  <h3>Resources</h3>
+  <ul>
+    <li><a href=https://https://use-the-index-luke.com/>use-the-index-luke.com</a>
+    <li>Django’s indexes documentation
+    <li>PostgreSQL docs Chapter 11: Indexes
+  </ul>
+</section>
+
+<section>
   <h3>Thank you! 🤗</h3>
   <ul>
     <li><a href=https://adamj.eu/contact>adamj.eu/contact</a>
     <li><a href=https://github.com/adamchainz/talk-data-oriented-django-drei>github.com/adamchainz/talk-data-oriented-django-drei</a>
     <li>Books:
         <ul>
-            <li>Boost Your GitHub DX <strong><em>new</em></strong>
+            <li>Boost Your GitHub DX <strong><em>WIP</em></strong>
             <li>Boost Your Django DX
             <li>Boost Your Git DX
             <li>Speed Up Your Django Tests
