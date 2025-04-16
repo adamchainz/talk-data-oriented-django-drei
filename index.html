@@ -66,9 +66,9 @@
 </section>
 
 <section>
-  <h2>Profile</h2>
+  <h2>Measure</h2>
   <p>
-    Measure with an APM tool:
+    Profile production with an APM tool:
   <ul>
     <li><strong>Sentry</strong>
     <li><strong>Scout APM</strong>
@@ -231,12 +231,19 @@ WHERE name = 'Kana'</code></pre>
 
 <section data-auto-animate>
   <h2>Tables are a leaky abstraction</h2>
-  <p>Performance horrendous without indexes
+  <p>Promise: just describe your data and query it
 </section>
 
 <section data-auto-animate>
   <h2>Tables are a leaky abstraction</h2>
-  <p>Performance horrendous without indexes
+  <p>Promise: just describe your data and query it
+  <p>Reality: horrendous performance without indexes
+</section>
+
+<section data-auto-animate>
+  <h2>Tables are a leaky abstraction</h2>
+  <p>Promise: just describe your data and query it
+  <p>Reality: horrendous performance without indexes
   <p><strong>Indexes make the world go round</strong>
 </section>
 
@@ -250,7 +257,7 @@ class Engine(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['name']),
+            models.Index("name"),
         ]</code></pre>
 </section>
 
@@ -258,7 +265,7 @@ class Engine(models.Model):
   <pre><code class=language-python>migrations.AddIndex(
     model_name="engine",
     index=models.Index(
-        fields=["name"],
+        "name",
         name="example_engine_name",
     ),
 )</code></pre>
@@ -353,18 +360,15 @@ WHERE name = 'Kana'</code></pre>
 </section>
 
 <section>
-  <h2>Indexes are not free</h2>
-  <p>Extra storage
-  <p>Add overhead to writes
-  <p>So we cannot “index all the things”
-</section>
-
-<section>
   <h2>Multi-column indexes</h2>
   <pre><code class=language-python>from django.db import models
 
 models.Index("name", "colour")</code></pre>
   <p>Speeds up filtering on only <code>name</code>, or on <code>name</code>&nbsp;and&nbsp;<code>colour</code>
+</section>
+
+<section>
+  <img src=img/b-tree-multi-column.svg class=r-stretch>
 </section>
 
 <section>
@@ -374,7 +378,11 @@ from django.db.models import Lower
 
 models.Index(Lower("name"))</code></pre>
   <p>Speeds up filtering like:
-  <pre><code class=language-python>Engine.objects.filter(Lower("name") = "kana")</code></pre>
+  <pre><code class=language-python>Engine.objects.annotate(
+    name_lower=Lower("name")
+).filter(
+    name_lower="kana"
+)</code></pre>
 </section>
 
 <section>
@@ -385,9 +393,8 @@ models.Index(
     "name",
     condition=models.Q(colour="purple"),
 )</code></pre>
-  <p>Speeds up filtering only when condition is filtered:
+  <p>Speeds up only queries with <code>condition</code>:
   <pre><code class=language-python>Engine.objects.filter(colour="purple", name="Kana")</code></pre>
-  <p>Smaller!</p>
 </section>
 
 <section>
@@ -409,25 +416,117 @@ models.Index(
   <p>
     Typically <strong>O(log n)</strong> but smaller
   <ul class=fragment>
-    <li>Hash - like a dict
-    <li>Bloom - index many fields in small space
-    <li>GiST - spatial data
+    <li><strong>GiST</strong> - spatial data, full text search
+    <li><strong>GIN</strong> - full text search, JSON
+    <li><strong>Hash</strong> - dict-like
+    <li><strong>Bloom</strong> - bloom filters
+    <li><strong>HNSW</strong> / <strong>IVFFlat</strong> - embedding vectors (pgvector)
   </ul>
   <p class=fragment>
     See <code>django.contrib.postgres.indexes</code>
 </section>
 
 <section>
-  <h2>Which indexes to add?</h2>
+  <h3>Options combinable</h3>
   <p>
-    Whole system optimization.
-  <p>
-    <strong>More of an art than a science</strong>
-  <p>
-    Check slowest queries
+    Partial inclusion multi-column expression bloom index, anyone?
+</section>
+
+
+<section>
+  <h2>Default indexes</h2>
+  <ul>
+    <li>Primary key
+    <li>Foreign keys
+    <li>Unique constraints
+  </ul>
 </section>
 
 <section>
+  <h2>Replace a default index</h2>
+  <pre><code class=language-python>from django.db import models
+
+class Engine(models.Model):
+    ...
+    home = models.ForeignKey(..., db_index=False)
+
+    class Meta:
+        indexes = [
+            models.Index("home"),
+        ]</code></pre>
+</section>
+
+<section>
+  <h2>Indexes are not free</h2>
+  <p>Extra storage
+  <p>Add overhead to writes
+  <p>So we cannot “index all the things”
+</section>
+
+<section data-auto-animate>
+  <h2>Which indexes to add?</h2>
+</section>
+
+<section data-auto-animate>
+  <h2>Which indexes to add?</h2>
+  <p>
+    Whole system optimization problem
+</section>
+
+<section data-auto-animate>
+  <h2>Which indexes to add?</h2>
+  <p>
+    Whole system optimization problem
+  <p>
+    <strong>More of an art than a science</strong>
+</section>
+
+<section>
+  <h2>Which indexes to add?</h2>
+  <ol>
+    <li>Design indexes along with model and queries
+    <li>Debug slow/resource-consuming queries
+  </ol>
+</section>
+
+<section data-auto-animate>
+  <h2>pgMustard</h2>
+</section>
+
+<section data-auto-animate>
+  <h2>pgMustard</h2>
+  <p>
+    Find my post: <strong>Django pgMustard</strong>
+</section>
+
+<section data-auto-animate>
+  <h2>pgMustard</h2>
+  <p>
+    Find my post: <strong>Django pgMustard</strong>
+  <pre><code class=language-python>
+    Engine.objects.filter(name="kana").explain(
+        format="json",
+        analyze=True,
+        buffers=True,
+        verbose=True,
+        settings=True,
+        wal=True,
+    )
+  </code></pre>
+</section>
+
+<section data-auto-animate>
+  <h2>pgMustard</h2>
+  <p>
+    Find my post: <strong>Django pgMustard</strong>
+  <pre><code class=language-json>[{"Plan": {"Node Type": "Gather", "Parallel Aware":
+false, "Startup Cost": 1000.0, "Total Cost":
+191384.91, "Plan Rows": 1031, "Plan Width": 72,
+"Actual Startup Time": 36.64, "Actual Total Time":
+4307.309, "Actual Rows": 100001, "Actual Loops": 1, ...</code></pre>
+</section>
+
+<section data-auto-animate>
   <h2>pgMustard</h2>
   <img src=img/pgmustard.png class=r-stretch>
 </section>
