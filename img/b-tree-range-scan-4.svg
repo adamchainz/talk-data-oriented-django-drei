@@ -3,7 +3,7 @@
    inkscape:export-ydpi="300.03751"
    inkscape:export-xdpi="300.03751"
    inkscape:export-filename="/Users/chainz/Documents/Projects/mystack/tech/assets/2020-09-04-diagrams.png"
-   sodipodi:docname="b-tree-search-3.svg"
+   sodipodi:docname="b-tree-range-scan-4.svg"
    inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
    id="svg8"
    version="1.1"
@@ -482,5 +482,10 @@
        style="fill:none;stroke:#8d4384;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        id="ellipse2"
        cx="46.446468"
+       cy="-655.13556"
+       r="6.05093" /><circle
+       style="fill:none;stroke:#8d4384;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="circle2"
+       cx="54.880692"
        cy="-655.13556"
        r="6.05093" /></g></svg>
