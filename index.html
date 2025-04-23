@@ -580,7 +580,7 @@ class Engine(models.Model):
 
     class Meta:
         indexes = [
-            models.Index("home"),
+            models.Index("home", include=["name"]),
         ]</code></pre>
 </section>
 
@@ -684,8 +684,8 @@ false, "Startup Cost": 1000.0, "Total Cost":
 <section>
   <h3>Thank you! 🤗</h3>
   <ul>
-    <li><a href=https://adamj.eu>adamj.eu</a>
     <li><a href=https://github.com/adamchainz/talk-data-oriented-django-drei>github.com/adamchainz/talk-data-oriented-django-drei</a>
+    <li><a href=https://adamj.eu>adamj.eu</a>
   </ul>
   <img src=img/books.png class=r-stretch>
 </section>
