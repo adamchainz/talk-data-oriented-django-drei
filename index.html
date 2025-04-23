@@ -68,7 +68,7 @@
 <section>
   <h2>Measure</h2>
   <p>
-    Profile production with an APM tool:
+    Use Application Performance Monitoring (APM):
   <ul>
     <li><strong>Sentry</strong>
     <li><strong>Scout APM</strong>
@@ -133,7 +133,7 @@ class Engine(models.Model):
   <table>
     <thead>
       <tr>
-        <th>ctid</th>
+        <th>row id</th>
         <th>id</th>
         <th>name</th>
         <th>colour</th>
@@ -179,7 +179,7 @@ WHERE name = 'Kana'</code></pre>
   <table>
     <thead>
       <tr>
-        <th>ctid</th>
+        <th>row id</th>
         <th>id</th>
         <th>name</th>
         <th>colour</th>
@@ -224,7 +224,7 @@ WHERE name = 'Kana'</code></pre>
 </section>
 
 <section>
-  <h2>O(n)</h2>
+  <h3>O(n)</h3>
   <table>
     <thead>
       <tr>
@@ -271,29 +271,27 @@ WHERE name = 'Kana'</code></pre>
 
 <section data-auto-animate>
   <h2>Tables are a leaky abstraction</h2>
-  <p><strong>Promise:</strong> describe your data, DB figures out storage
+  <p><strong>Promise:</strong> describe your data, DB handles storage
 </section>
 
 <section data-auto-animate>
   <h2>Tables are a leaky abstraction</h2>
-  <p><strong>Promise:</strong> describe your data, DB figures out storage
+  <p><strong>Promise:</strong> describe your data, DB handles storage
   <p><strong>Reality:</strong> horrendous performance without indexes
 </section>
 
 <section data-auto-animate>
   <h2>Tables are a leaky abstraction</h2>
-  <p><strong>Promise:</strong> describe your data, DB figures out storage
+  <p><strong>Promise:</strong> describe your data, DB handles storage
   <p><strong>Reality:</strong> horrendous performance without indexes
   <p><strong>Indexes make the world go round</strong>
 </section>
 
 <section>
-  <h2>Indexes</h2>
   <img src=img/book-index.svg class=r-stretch>
 </section>
 
 <section>
-  <h2>Indexes</h2>
   <p>Like a <code>dict</code> of values to row IDs
   <pre><code class=language-python>index_on_name = {
     "Kana": [20],
@@ -379,7 +377,7 @@ WHERE name = 'Kana'</code></pre>
 </section>
 
 <section>
-  <h2>O(log n)</h2>
+  <h3>O(log n)</h3>
   <table>
     <thead>
       <tr>
@@ -621,22 +619,26 @@ class Engine(models.Model):
 
 <section>
   <h2>Design</h2>
-  <p>
+  <p class=fragment>
     “I know we will be filtering by <code>name</code> a lot, so let’s index it”
+  <p class=fragment>
+    “Archived messages won’t support searching, so they can be excluded from that index”
 </section>
 
 <section>
   <h2>Debug</h2>
-  <p>
+  <p class=fragment>
     “These are the slowest queries, let’s see if any indexes could help them”
+  <p class=fragment>
+    “That index is never used, can we remove it?”
 </section>
 
 <section data-auto-animate>
-  <h2>pgMustard</h2>
+  <h3>pgMustard</h3>
 </section>
 
 <section data-auto-animate>
-  <h2>pgMustard</h2>
+  <h3>pgMustard</h3>
   <p>
     Get the <strong>query plan</strong> with <code>QuerySet.explain()</code>:
   <pre><code class=language-python>
@@ -652,7 +654,7 @@ class Engine(models.Model):
 </section>
 
 <section data-auto-animate>
-  <h2>pgMustard</h2>
+  <h3>pgMustard</h3>
   <p>
     Query plan:
   <pre><code class=language-json>[{"Plan": {"Node Type": "Gather", "Parallel Aware":
@@ -664,7 +666,7 @@ false, "Startup Cost": 1000.0, "Total Cost":
 </section>
 
 <section data-auto-animate>
-  <h2>pgMustard</h2>
+  <h3>pgMustard</h3>
   <img src=img/pgmustard.png class=r-stretch>
 </section>
 
